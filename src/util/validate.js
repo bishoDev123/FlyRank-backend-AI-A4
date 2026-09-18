@@ -1,4 +1,4 @@
-const { ValidationError, NotFoundError } = require('../errors');
+const { ValidationError, NotFoundError, AuthError } = require('../errors');
 
 function validateTitle(title) {
     if (!title) throw new ValidationError('Title is required');
@@ -27,4 +27,21 @@ function validateDone(done) {
         throw new ValidationError(`couldn't change task status`);
 }
 
-module.exports = { validateTitle, validateId, validateTask, validateDone };
+function validateCredentials(email, password) {
+    if (!email || !password) {
+        throw new ValidationError('invalid credentials');
+    }
+}
+
+function checkSuccess(error) {
+    if (error) throw new AuthError(error.message);
+}
+
+module.exports = {
+    validateTitle,
+    validateId,
+    validateTask,
+    validateDone,
+    validateCredentials,
+    checkSuccess
+};
