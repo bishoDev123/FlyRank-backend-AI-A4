@@ -1,8 +1,6 @@
 const express = require('express');
 const service = require('../services/auth.service');
 
-const { supabase } = require('../util/supabase');
-
 const router = express.Router();
 
 router.post('/auth/signup', async (req, res, next) => {
@@ -31,14 +29,13 @@ router.get('/public/info', (req, res) => {
     res.status(200).json({ message: 'Welcome stranger! this info is public' });
 });
 
-router.get('/protected/profile', (req, res, next) => {
+router.get('/protected/profile', async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
-        const token = service.getToken(authHeader);
+        const data = await service.getProfile(authHeader);
+        const { id, email, created_at } = data.user;
 
-        res.status(200).json({ 
-            message: `This is private info only available to those authenticated with token: ${token}` 
-        });
+        res.status(200).json({ id, email, created_at });
     } catch (err) {
         next(err);
     }

@@ -23,7 +23,7 @@ function validateTask(task, id) {
 }
 
 function validateDone(done) {
-    if (!typeof done === "boolean")
+    if (!typeof done !== "boolean")
         throw new ValidationError(`couldn't change task status`);
 }
 
@@ -37,6 +37,19 @@ function checkSuccess(error) {
     if (error) throw new AuthError(error.message);
 }
 
+function checkUser(data) {
+    if (!data?.user) throw new AuthError('Invalid or expired token');
+}
+
+function validateToken(authHeader) {
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        return authHeader.split(' ')[1];
+    } else {    
+        throw new AuthError('Access token required');
+    }
+}
+
+
 module.exports = {
     validateTitle,
     validateId,
@@ -44,4 +57,6 @@ module.exports = {
     validateDone,
     validateCredentials,
     checkSuccess,
+    checkUser,
+    validateToken
 };

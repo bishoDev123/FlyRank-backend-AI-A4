@@ -1,5 +1,5 @@
 const { supabase } = require('../util/supabase');
-const { validateCredentials, checkSuccess } = require('../util/validate');
+const { validateCredentials, checkSuccess, validateToken, checkUser } = require('../util/validate');
 const { AuthError } = require('../errors');
 
 async function signUp(email, password) {
@@ -26,12 +26,14 @@ async function login(email, password) {
     };
 }
 
-function getToken(authHeader) {
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-        return authHeader.split(' ')[1];
-    } else {    
-        throw new AuthError('Access token required');
-    }
+async function getProfile(authHeader) {
+    const token = validateToken(authHeader);
+
+    const { data, error } = await supabase.auth.getUser(token);
+    checkSuccess(error);
+    checkUser(data);
+    
+    return data;
 }
 
-module.exports = { signUp, login, getToken };
+module.exports = { signUp, login, getProfile };
