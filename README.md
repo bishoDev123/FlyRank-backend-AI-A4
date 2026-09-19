@@ -9,15 +9,23 @@ Download the full code, set the .env variables like in `.env.example`, and run `
 ----------
 #### API endpoints:
 
-| Method | Endpoint      | Description                     | Request Body                          | Success Response          | Error Response(s)                          |
-|--------|---------------|----------------------------------|----------------------------------------|----------------------------|---------------------------------------------|
-| GET    | `/`           | API info and available endpoints | —                                      | `200 OK`                  | —                                             |
-| GET    | `/health`     | Health check                     | —                                      | `200 OK`                  | —                                             |
-| GET    | `/tasks`      | Get all tasks                    | —                                      | `200 OK` — array of tasks | —                                             |
-| GET    | `/tasks/:id`  | Get a single task by id          | —                                      | `200 OK` — task object    | `404 Not Found` — task doesn't exist         |
-| POST   | `/tasks`      | Create a new task                | `{ "title": "string" }`               | `201 Created` — new task  | `400 Bad Request` — missing/empty title      |
-| PUT    | `/tasks/:id`  | Update an existing task          | `{ "title": "string", "done": bool }` | `200 OK` — updated task   | `400 Bad Request`, `404 Not Found`           |
-| DELETE | `/tasks/:id`  | Delete a task by id              | —                                      | `204 No Content`          | `404 Not Found` — task doesn't exist         |
+This version of the project includes endpoints that utilize the **Authentication** feature of supabase with some endpoints requiring you to login and have a bearer token to access, these enpoints are prefixed by `/protected`.
+
+| Method | Endpoint               | Description                                      | Request Body                                    | Success Response                        | Error Response(s)                                                  |
+|--------|-------------------------|---------------------------------------------------|--------------------------------------------------|-------------------------------------------|----------------------------------------------------------------------|
+| GET    | `/`                     | API info and available endpoints                  | -                                                | `200 OK`                                  | -                                                                      |
+| GET    | `/health`               | Health check                                       | -                                                | `200 OK`                                  | -                                                                      |
+| GET    | `/tasks`                | Get all tasks                                      | -                                                | `200 OK`, array of tasks                  | -                                                                      |
+| GET    | `/tasks/:id`            | Get a single task by id                            | -                                                | `200 OK`, task object                     | `404 Not Found`, task doesn't exist                                    |
+| POST   | `/tasks`                | Create a new task                                  | `{ "title": "string" }`                         | `201 Created`, new task                   | `400 Bad Request`, missing/empty title                                 |
+| PUT    | `/tasks/:id`            | Update an existing task                            | `{ "title": "string", "done": bool }`           | `200 OK`, updated task                    | `400 Bad Request`, `404 Not Found`                                     |
+| DELETE | `/tasks/:id`            | Delete a task by id                                | -                                                | `204 No Content`                          | `404 Not Found`, task doesn't exist                                    |
+| POST   | `/auth/signup`          | Register a new user                                | `{ "email": "string", "password": "string" }`   | `201 Created`, new user data              | `400 Bad Request`, missing/invalid email or password                   |
+| POST   | `/auth/login`           | Log in an existing user                            | `{ "email": "string", "password": "string" }`   | `201 Created`, `{ accessToken, refreshToken }` | `400 Bad Request`, missing credentials; `401 Unauthorized`, invalid credentials |
+| POST   | `/auth/logout`          | Log out the authenticated user                     | none, requires `Authorization: Bearer <token>`  | `204 No Content`                          | `401 Unauthorized`, missing/invalid/expired token                      |
+| GET    | `/public/info`          | Get publicly accessible info                       | -                                                | `200 OK`                                  | -                                                                      |
+| GET    | `/protected/profile`    | Get the authenticated user's profile               | none, requires `Authorization: Bearer <token>`  | `200 OK`, `{ id, email, created_at }`     | `401 Unauthorized`, missing/invalid/expired token                      |
+| GET    | `/protected/dashboard`  | Get the authenticated user's dashboard greeting    | none, requires `Authorization: Bearer <token>`  | `200 OK`, `{ message }`                   | `401 Unauthorized`, missing/invalid/expired token                      |
 ----------
 #### Example Curl output:
 ```
@@ -39,7 +47,8 @@ This is the curl output of the post method with just the title.
 
 #### Swagger UI:
 
-<img width="1893" height="913" alt="image" src="https://github.com/user-attachments/assets/786a785c-1295-4380-8fcf-dd1a26885ebe" />
+<img width="1907" height="911" alt="image" src="https://github.com/user-attachments/assets/7abf0122-2c2e-4c33-93fd-55ad861fbb63" />
+
 
 This is the Swagger UI made using Swagger-jsdocs. <br>
 `Transparency notes: The actual integration of the Swagger UI is handmade, the documentation itself was done using a claude project`
@@ -62,8 +71,3 @@ This is the Swagger UI made using Swagger-jsdocs. <br>
 **Example query**:
 
 <img width="372" height="467" alt="image" src="https://github.com/user-attachments/assets/af98b43a-2bdd-49a3-8dfd-1a8066d1ed2b" />
-
-----------
-
-#### Dockerization:
-
