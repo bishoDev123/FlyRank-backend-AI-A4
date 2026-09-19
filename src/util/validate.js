@@ -43,5 +43,5 @@ module.exports = {
     validateTask,
     validateDone,
     validateCredentials,
-    checkSuccess
+    checkSuccess,
 };
