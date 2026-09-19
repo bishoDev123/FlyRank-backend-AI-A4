@@ -2,6 +2,7 @@ const path = require('path');
 const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const { version } = require('../../package.json');
+const { Component } = require('react');
 
 const routesGlob = path.join(__dirname, '../routes/*.js').replace(/\\/g, '/');
 
@@ -11,6 +12,15 @@ const options = {
         info: {
             title: "REST API Docs",
             version
+        },
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT'
+                }
+            }
         }
     },
     apis: [routesGlob]
