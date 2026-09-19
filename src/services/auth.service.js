@@ -1,6 +1,5 @@
 const { supabase } = require('../util/supabase');
 const { validateCredentials, checkSuccess, validateToken, checkUser } = require('../util/validate');
-const { AuthError } = require('../errors');
 
 async function signUp(email, password) {
     const { data, error } = await supabase.auth.signUp({ email, password });
@@ -26,14 +25,9 @@ async function login(email, password) {
     };
 }
 
-async function getProfile(authHeader) {
-    const token = validateToken(authHeader);
-
-    const { data, error } = await supabase.auth.getUser(token);
+async function signOut() {
+    const {error} = await supabase.auth.signOut();
     checkSuccess(error);
-    checkUser(data);
-    
-    return data;
 }
 
-module.exports = { signUp, login, getProfile };
+module.exports = { signUp, login, signOut };
